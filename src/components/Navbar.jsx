@@ -1,45 +1,83 @@
-import { Instagram, Phone, ShoppingBag } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { ShoppingBag, Instagram, Phone, MessageCircle } from 'lucide-react';
 
-const Navbar = () => {
+const links = [
+  { href: '#home', label: 'Home' },
+  { href: '#menu', label: 'Menu' },
+  { href: '#plans', label: 'Plans' },
+  { href: '#order', label: 'Order' },
+];
+
+export default function Navbar() {
+  const [active, setActive] = useState('#home');
+
+  useEffect(() => {
+    const sections = links.map(l => document.querySelector(l.href));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActive(`#${entry.target.id}`);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    sections.forEach((sec) => sec && observer.observe(sec));
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-green-100">
+    <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/60 bg-white/70 border-b border-white/40">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <a href="#home" className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-lg bg-green-500 text-white grid place-items-center font-bold">FB</div>
-          <span className="font-semibold text-gray-900">Fruit Bowl</span>
-        </a>
-        <div className="hidden md:flex items-center space-x-8 text-sm font-medium">
-          <a href="#home" className="text-gray-700 hover:text-green-600">Home</a>
-          <a href="#menu" className="text-gray-700 hover:text-green-600">Menu</a>
-          <a href="#about" className="text-gray-700 hover:text-green-600">About</a>
-          <a href="#order" className="text-gray-700 hover:text-green-600">Order</a>
-        </div>
-        <div className="flex items-center space-x-3">
+        <a href="#home" className="font-semibold tracking-tight text-slate-900 text-lg">HAPPY BOWL</a>
+
+        <ul className="hidden md:flex items-center gap-6 text-slate-700">
+          {links.map((l) => (
+            <li key={l.href}>
+              <a
+                href={l.href}
+                className={`py-2 inline-block transition-colors ${active === l.href ? 'text-slate-900 border-b-2 border-emerald-500' : 'hover:text-slate-900'}`}
+              >
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className="hidden md:flex items-center gap-3">
           <a
-            href="https://wa.me/15551234567"
+            href="https://wa.me/9121465735"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-green-600 text-white px-3 py-2 rounded-md hover:bg-green-700 transition"
+            className="inline-flex items-center gap-2 rounded-full bg-emerald-500 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-600 transition shadow"
           >
-            <ShoppingBag size={18} />
-            <span className="hidden sm:inline">Order Now</span>
+            <ShoppingBag className="w-4 h-4" /> Order Now
           </a>
           <a
-            href="https://instagram.com"
+            href="https://instagram.com/happybowl.vizag"
             target="_blank"
             rel="noreferrer"
-            className="p-2 rounded-md hover:bg-gray-100 text-pink-600"
             aria-label="Instagram"
+            className="p-2 rounded-full hover:bg-slate-100 transition"
           >
-            <Instagram size={20} />
+            <Instagram className="w-5 h-5 text-slate-700" />
           </a>
-          <a href="tel:+15551234567" className="p-2 rounded-md hover:bg-gray-100 text-green-600" aria-label="Call">
-            <Phone size={20} />
+          <a href="tel:+919121465735" aria-label="Call" className="p-2 rounded-full hover:bg-slate-100 transition">
+            <Phone className="w-5 h-5 text-slate-700" />
+          </a>
+        </div>
+
+        <div className="md:hidden">
+          <a
+            href="https://wa.me/9121465735"
+            className="inline-flex items-center gap-2 rounded-full bg-emerald-500 text-white px-3 py-2 text-sm font-medium shadow"
+          >
+            <MessageCircle className="w-4 h-4" /> WhatsApp
           </a>
         </div>
       </nav>
     </header>
   );
-};
-
-export default Navbar;
+}
